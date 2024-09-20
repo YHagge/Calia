@@ -1,0 +1,32 @@
+name: Execute Colab Notebook
+
+on:
+  schedule:
+    - cron: '0 18 * * *'  # Executa todos os dias às 18:00 UTC
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  execute-notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install nbconvert
+          pip install notebook
+
+      - name: Execute the Notebook
+        run: |
+          jupyter nbconvert --to notebook --execute pantanal.ipynb --inplace
